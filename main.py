@@ -1,8 +1,10 @@
 # use code form open-source pygame library
 import pygame
 
-# using contstants from constants.py
+# using constants from constants.py
 from constants import *
+
+from logger import log_state
 
 pygame.init()
 Clock = pygame.time.Clock()
@@ -12,6 +14,7 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     dt = 0
     while True:
+        log_state()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
