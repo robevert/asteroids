@@ -3,6 +3,7 @@ import pygame
 
 # using constants from constants.py
 from constants import *
+from player import *
 
 from logger import log_state
 
@@ -13,12 +14,14 @@ def main():
     print(f"Starting Asteroids!\nScreen width: {SCREEN_WIDTH}\nScreen height: {SCREEN_HEIGHT}")
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     dt = 0
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     while True:
         log_state()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
         screen.fill((0, 0, 0))
+        player.draw(screen)
         pygame.display.flip()
         # last line of loop, sets fps
         dt = Clock.tick(60) / 1000
