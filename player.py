@@ -1,8 +1,10 @@
 import pygame
 from constants import LINE_WIDTH
 from constants import PLAYER_RADIUS
+from constants import PLAYER_TURN_SPEED
+from constants import PLAYER_SPEED
 from circleshape import CircleShape
-print("Loaded LINE_WIDTH:", LINE_WIDTH)
+##print("Loaded LINE_WIDTH:", LINE_WIDTH)
 
 
 class Player(CircleShape):
@@ -20,3 +22,30 @@ class Player(CircleShape):
 
     def draw(self, screen):
         pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)
+    
+    def rotate(self, dt):
+        self.rotation += PLAYER_TURN_SPEED * dt
+        #print(self.rotation)
+
+    def move(self, dt):
+        unit_vector = pygame.Vector2(0, 1)
+        rotated_vector = unit_vector.rotate(self.rotation)
+        rotated_with_speed_vector = rotated_vector * PLAYER_SPEED * dt
+        self.position += rotated_with_speed_vector
+
+    def update(self, dt):
+        #print(f"update called with dt={dt}")
+        keys = pygame.key.get_pressed()
+        #print(f"keys object: {keys}")
+        if keys[pygame.K_a]:
+            #print("A key detected!")
+            self.rotate((dt*-1))
+        if keys[pygame.K_d]:
+            #print("D key detected!")
+            self.rotate((dt))
+        if keys[pygame.K_w]:
+            #print("W key detected!")
+            self.move((dt))
+        if keys[pygame.K_s]:
+            #print("S key detected!")
+            self.move((dt*-1))
