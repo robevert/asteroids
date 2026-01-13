@@ -3,7 +3,11 @@ from constants import LINE_WIDTH
 from constants import PLAYER_RADIUS
 from constants import PLAYER_TURN_SPEED
 from constants import PLAYER_SPEED
+from constants import SHOT_RADIUS
+from constants import PLAYER_SHOOT_SPEED
+from constants import PLAYER_SHOOT_COOLDOWN_SECONDS
 from circleshape import CircleShape
+from shot import Shot
 ##print("Loaded LINE_WIDTH:", LINE_WIDTH)
 
 
@@ -11,6 +15,7 @@ class Player(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
+        self.cooldown = 0
 
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -33,7 +38,17 @@ class Player(CircleShape):
         rotated_with_speed_vector = rotated_vector * PLAYER_SPEED * dt
         self.position += rotated_with_speed_vector
 
+    def shoot(self):
+        if self.cooldown > 0:
+            return
+        else:
+            self.cooldown = PLAYER_SHOOT_COOLDOWN_SECONDS
+        newshot = Shot(self.position.x, self.position.y)
+        direction = pygame.Vector2(0, 1).rotate(self.rotation)
+        newshot.velocity = direction * PLAYER_SHOOT_SPEED
+
     def update(self, dt):
+        self.cooldown -= dt
         #print(f"update called with dt={dt}")
         keys = pygame.key.get_pressed()
         #print(f"keys object: {keys}")
@@ -49,3 +64,5 @@ class Player(CircleShape):
         if keys[pygame.K_s]:
             #print("S key detected!")
             self.move((dt*-1))
+        if keys[pygame.K_SPACE]:
+            self.shoot()
